@@ -1,0 +1,111 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}📊 Dashboard Overview{% endblock %}
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card" style="border-left-color: #C8960C;">
+    <div class="stat-info"><h3>{{ total_orders }}</h3><p>Total Orders</p></div>
+    <div class="stat-icon" style="background:#fefcbf;">📋</div>
+  </div>
+  <div class="stat-card" style="border-left-color:#38a169;">
+    <div class="stat-info"><h3>{{ today_orders }}</h3><p>Today's Orders</p></div>
+    <div class="stat-icon" style="background:#f0fff4;">🆕</div>
+  </div>
+  <div class="stat-card" style="border-left-color:#3182ce;">
+    <div class="stat-info"><h3>₹{{ total_revenue|floatformat:0 }}</h3><p>Total Revenue</p></div>
+    <div class="stat-icon" style="background:#ebf8ff;">💰</div>
+  </div>
+  <div class="stat-card" style="border-left-color:#e53e3e;">
+    <div class="stat-info"><h3>{{ pending_orders }}</h3><p>Pending Orders</p></div>
+    <div class="stat-icon" style="background:#fff5f5;">⏳</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:25px;margin-bottom:25px;">
+  <div class="stat-card" style="border-left-color:#805ad5;">
+    <div class="stat-info"><h3>{{ total_items }}</h3><p>Menu Items</p></div>
+    <div class="stat-icon" style="background:#faf5ff;">🍽️</div>
+  </div>
+  <div class="stat-card" style="border-left-color:#dd6b20;">
+    <div class="stat-info"><h3>₹{{ today_revenue|floatformat:0 }}</h3><p>Today's Revenue</p></div>
+    <div class="stat-icon" style="background:#fffaf0;">📈</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>🕐 Recent Orders</h3>
+    <a href="/admin-panel/orders/" class="btn btn-primary btn-sm">View All</a>
+  </div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td><strong style="color:var(--gold);">{{ order.order_id }}</strong></td>
+            <td>
+              <div style="font-weight:600;">{{ order.customer_name }}</div>
+              <div style="font-size:12px;color:#888;">{{ order.customer_email }}</div>
+            </td>
+            <td>{{ order.order_items.count }} item(s)</td>
+            <td><strong>₹{{ order.total }}</strong></td>
+            <td>{{ order.get_payment_method_display }}</td>
+            <td>
+              {% if order.status == 'paid' %}<span class="badge badge-success">Paid</span>
+              {% elif order.status == 'pending' %}<span class="badge badge-warning">Pending</span>
+              {% elif order.status == 'preparing' %}<span class="badge badge-info">Preparing</span>
+              {% elif order.status == 'cancelled' %}<span class="badge badge-danger">Cancelled</span>
+              {% else %}<span class="badge badge-dark">{{ order.get_status_display }}</span>{% endif %}
+            </td>
+            <td style="font-size:12px;color:#888;">{{ order.created_at|date:"d M, h:i A" }}</td>
+            <td>
+              <a href="/download-bill/{{ order.order_id }}/" class="btn btn-sm btn-gold">📄 Bill</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="8" style="text-align:center;padding:30px;color:#888;">No orders yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:25px;">
+  <div class="card" style="margin-bottom:0;">
+    <div class="card-header"><h3>🚀 Quick Actions</h3></div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <a href="/admin-panel/menu/" class="btn btn-gold" style="justify-content:center;">🍽️ Manage Menu</a>
+        <a href="/admin-panel/orders/" class="btn btn-primary" style="justify-content:center;color:var(--gold);">📋 View All Orders</a>
+        <a href="/admin-panel/tables/" class="btn btn-success" style="justify-content:center;">🪑 Manage Tables</a>
+        <a href="/admin-panel/messages/" class="btn btn-danger" style="justify-content:center;">
+          ✉️ Messages
+          {% if unread_messages %}<span style="background:red;color:white;border-radius:10px;padding:2px 8px;font-size:11px;">{{ unread_messages }} New</span>{% endif %}
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:0;">
+    <div class="card-header"><h3>📊 Today's Summary</h3></div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:15px;">
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f7fafc;border-radius:6px;">
+          <span style="color:#666;">Orders Today</span><strong>{{ today_orders }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f7fafc;border-radius:6px;">
+          <span style="color:#666;">Revenue Today</span><strong style="color:var(--gold);">₹{{ today_revenue|floatformat:2 }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f7fafc;border-radius:6px;">
+          <span style="color:#666;">Pending Orders</span><strong style="color:#e53e3e;">{{ pending_orders }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f7fafc;border-radius:6px;">
+          <span style="color:#666;">Unread Messages</span><strong style="color:#3182ce;">{{ unread_messages }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

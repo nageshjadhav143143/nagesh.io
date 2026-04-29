@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - Golden Crown Hotel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Josefin Sans', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0D0D1A 0%, #1a1a2e 50%, #16213e 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.login-card {
+  background: white; border-radius: 12px; padding: 50px;
+  width: 420px; box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+  border-top: 4px solid #C8960C;
+}
+.login-header { text-align: center; margin-bottom: 35px; }
+.login-icon { font-size: 55px; margin-bottom: 15px; }
+.login-header h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: #0D0D1A; }
+.login-header p { font-size: 13px; color: #888; margin-top: 5px; letter-spacing: 1px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
+.form-group input {
+  width: 100%; padding: 14px 16px; border: 2px solid #eee;
+  border-radius: 6px; font-family: 'Josefin Sans', sans-serif; font-size: 14px;
+  outline: none; transition: border 0.3s;
+}
+.form-group input:focus { border-color: #C8960C; }
+.login-btn {
+  width: 100%; background: linear-gradient(135deg, #C8960C, #8B6508);
+  color: white; border: none; padding: 16px; font-family: 'Josefin Sans', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+  border-radius: 6px; text-transform: uppercase; transition: all 0.3s; margin-top: 10px;
+}
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(200,150,12,0.4); }
+.error-msg { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; padding: 14px; border-radius: 6px; font-size: 14px; margin-bottom: 20px; }
+.back-link { text-align: center; margin-top: 25px; }
+.back-link a { color: #888; text-decoration: none; font-size: 13px; transition: color 0.2s; }
+.back-link a:hover { color: #C8960C; }
+</style>
+</head>
+<body>
+<div class="login-card">
+  <div class="login-header">
+    <div class="login-icon">🏨</div>
+    <h1>Admin Login</h1>
+    <p>Golden Crown Hotel Management</p>
+  </div>
+  {% if messages %}
+    {% for message in messages %}
+    <div class="error-msg">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" name="username" placeholder="Enter username" required autofocus>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Enter password" required>
+    </div>
+    <button type="submit" class="login-btn">🔐 Login to Dashboard</button>
+  </form>
+  <div class="back-link"><a href="/">← Back to Hotel Website</a></div>
+</div>
+</body>
+</html>

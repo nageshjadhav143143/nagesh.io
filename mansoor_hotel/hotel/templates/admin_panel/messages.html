@@ -1,0 +1,28 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}✉️ Customer Messages{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header"><h3>✉️ All Messages ({{ messages_list.count }})</h3></div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th></tr></thead>
+        <tbody>
+          {% for msg in messages_list %}
+          <tr>
+            <td><strong>{{ msg.name }}</strong></td>
+            <td><a href="mailto:{{ msg.email }}" style="color:var(--gold);text-decoration:none;">{{ msg.email }}</a></td>
+            <td>{{ msg.subject }}</td>
+            <td style="max-width:300px;font-size:13px;color:#555;">{{ msg.message|truncatechars:100 }}</td>
+            <td style="font-size:12px;color:#888;">{{ msg.created_at|date:"d M Y, h:i A" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align:center;padding:40px;color:#888;">No messages yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,229 @@
+{% extends 'hotel/base.html' %}
+{% block title %}Golden Crown Hotel - Fine Dining & Hospitality{% endblock %}
+{% block extra_css %}
+<style>
+/* HERO */
+.hero {
+  min-height: 95vh;
+  background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 50%, var(--dark3) 100%);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8960C' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-content { position: relative; z-index: 1; max-width: 800px; }
+.hero-badge {
+  display: inline-block; 
+  border: 1px solid var(--gold); color: var(--gold);
+  padding: 8px 25px; letter-spacing: 4px; font-size: 12px;
+  text-transform: uppercase; margin-bottom: 25px;
+  animation: fadeInDown 0.8s ease;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(50px, 8vw, 90px);
+  color: white; line-height: 1.1;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.8s ease 0.2s both;
+}
+.hero h1 span { color: var(--gold); display: block; }
+.hero p {
+  font-family: 'Crimson Text', serif;
+  font-size: 20px; color: var(--text-light);
+  margin-bottom: 40px; line-height: 1.7;
+  animation: fadeInUp 0.8s ease 0.4s both;
+}
+.hero-btns { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; animation: fadeInUp 0.8s ease 0.6s both; }
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--dark); padding: 16px 40px; text-decoration: none;
+  font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  font-size: 13px; border-radius: 2px; transition: all 0.3s;
+  display: inline-block;
+}
+.btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(200,150,12,0.4); }
+.btn-outline {
+  border: 2px solid var(--gold); color: var(--gold);
+  padding: 16px 40px; text-decoration: none;
+  font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  font-size: 13px; border-radius: 2px; transition: all 0.3s;
+  display: inline-block;
+}
+.btn-outline:hover { background: var(--gold); color: var(--dark); }
+
+/* FEATURES */
+.features {
+  padding: 80px 40px;
+  background: white;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;
+}
+.feature-card {
+  text-align: center; padding: 40px 20px;
+  border: 1px solid #eee; transition: all 0.3s;
+}
+.feature-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+.feature-icon { font-size: 50px; margin-bottom: 20px; }
+.feature-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--dark); margin-bottom: 10px; }
+.feature-card p { font-size: 14px; color: #666; line-height: 1.7; }
+
+/* FEATURED ITEMS */
+.section { padding: 80px 40px; }
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-tag { font-size: 12px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(35px, 5vw, 55px); color: var(--dark); }
+.section-title span { color: var(--gold); }
+
+.menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.menu-card {
+  background: white; border-radius: 4px; overflow: hidden;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08); transition: all 0.4s;
+  position: relative;
+}
+.menu-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+.menu-card-img {
+  height: 220px; background: linear-gradient(135deg, var(--dark2), var(--dark3));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 80px; position: relative; overflow: hidden;
+}
+.menu-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.veg-badge {
+  position: absolute; top: 15px; left: 15px;
+  background: white; border: 2px solid #4CAF50;
+  color: #4CAF50; padding: 4px 10px; font-size: 11px; font-weight: 700;
+  border-radius: 2px; letter-spacing: 1px;
+}
+.menu-card-body { padding: 25px; }
+.menu-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 8px; }
+.menu-card p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 20px; font-family: 'Crimson Text', serif; font-size: 16px; }
+.menu-card-footer { display: flex; align-items: center; justify-content: space-between; }
+.price { font-size: 22px; font-weight: 700; color: var(--gold); font-family: 'Playfair Display', serif; }
+.add-btn {
+  background: var(--dark); color: white;
+  padding: 10px 20px; border: none; cursor: pointer;
+  font-family: 'Josefin Sans', sans-serif;
+  letter-spacing: 1px; font-size: 12px; text-transform: uppercase;
+  transition: all 0.3s; text-decoration: none; border-radius: 2px;
+}
+.add-btn:hover { background: var(--gold); color: var(--dark); }
+
+/* STATS */
+.stats {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+  padding: 80px 40px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 30px; text-align: center;
+  border-top: 3px solid var(--gold); border-bottom: 3px solid var(--gold);
+}
+.stat-number { font-family: 'Playfair Display', serif; font-size: 60px; color: var(--gold); line-height: 1; }
+.stat-label { color: var(--text-light); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">⭐ Established Since 1995 ⭐</div>
+    <h1>Welcome to<span>Golden Crown Hotel</span></h1>
+    <p>Where every meal is a masterpiece crafted with love, tradition, and the finest ingredients.</p>
+    <div class="hero-btns">
+      <a href="/order/" class="btn-gold">🍽️ Order Now</a>
+      <a href="/menu/" class="btn-outline">View Our Menu</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature-card">
+    <div class="feature-icon">👨‍🍳</div>
+    <h3>Expert Chefs</h3>
+    <p>Our master chefs bring decades of experience and passion to every dish.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🥗</div>
+    <h3>Fresh Ingredients</h3>
+    <p>Only the finest, freshest ingredients sourced daily for your pleasure.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🚀</div>
+    <h3>Fast Service</h3>
+    <p>Swift, attentive service that makes your dining experience seamless.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">💳</div>
+    <h3>Easy Payment</h3>
+    <p>Multiple payment options including UPI, cards, and cash for convenience.</p>
+  </div>
+</section>
+
+{% if featured_items %}
+<section class="section" style="background: var(--cream);">
+  <div class="section-header">
+    <p class="section-tag">Chef's Recommendations</p>
+    <h2 class="section-title">Featured <span>Dishes</span></h2>
+  </div>
+  <div class="menu-grid">
+    {% for item in featured_items %}
+    <div class="menu-card">
+      <div class="menu-card-img">
+        {% if item.image %}
+          <img src="{{ item.image.url }}" alt="{{ item.name }}">
+        {% else %}
+          {% if item.is_veg %}🥗{% else %}🍖{% endif %}
+        {% endif %}
+        {% if item.is_veg %}<span class="veg-badge">🌿 VEG</span>{% endif %}
+      </div>
+      <div class="menu-card-body">
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.description|truncatechars:80 }}</p>
+        <div class="menu-card-footer">
+          <span class="price">₹{{ item.price }}</span>
+          <a href="/order/" class="add-btn">Order Now</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="text-align:center; margin-top: 50px;">
+    <a href="/menu/" class="btn-gold">View Full Menu →</a>
+  </div>
+</section>
+{% endif %}
+
+<section class="stats">
+  <div>
+    <div class="stat-number">5000+</div>
+    <div class="stat-label">Happy Customers</div>
+  </div>
+  <div>
+    <div class="stat-number">150+</div>
+    <div class="stat-label">Menu Items</div>
+  </div>
+  <div>
+    <div class="stat-number">25+</div>
+    <div class="stat-label">Years Experience</div>
+  </div>
+  <div>
+    <div class="stat-number">4.9⭐</div>
+    <div class="stat-label">Customer Rating</div>
+  </div>
+</section>
+
+<section class="section" style="background: white; text-align: center;">
+  <div class="section-header" style="margin-bottom: 30px;">
+    <p class="section-tag">Reserve Your Experience</p>
+    <h2 class="section-title">Ready to <span>Dine?</span></h2>
+    <p style="font-family: 'Crimson Text', serif; font-size: 20px; color: #666; margin-top: 15px; max-width: 600px; margin-left: auto; margin-right: auto;">
+      Order online now and experience the authentic flavors of Golden Crown Hotel delivered to your table.
+    </p>
+  </div>
+  <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+    <a href="/order/" class="btn-gold" style="font-size: 15px; padding: 18px 50px;">🍽️ Place an Order</a>
+    <a href="/contact/" class="btn-outline" style="font-size: 15px; padding: 18px 50px;">📞 Contact Us</a>
+  </div>
+</section>
+{% endblock %}

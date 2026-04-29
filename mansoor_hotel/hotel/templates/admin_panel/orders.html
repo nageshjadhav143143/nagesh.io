@@ -1,0 +1,109 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}📋 Orders Management{% endblock %}
+{% block content %}
+<!-- Filter Bar -->
+<div style="display:flex;gap:10px;margin-bottom:25px;flex-wrap:wrap;">
+  <a href="/admin-panel/orders/" class="btn {% if not status_filter %}btn-gold{% else %}btn-primary{% endif %}">All</a>
+  {% for val, label in status_choices %}
+  <a href="/admin-panel/orders/?status={{ val }}" class="btn {% if status_filter == val %}btn-gold{% else %}btn-primary{% endif %}" style="color:{% if status_filter != val %}var(--gold){% else %}white{% endif %};">{{ label }}</a>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>📋 Orders ({{ orders.count }})</h3>
+  </div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Order ID</th><th>Customer</th><th>Table</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td><strong style="color:var(--gold);">{{ order.order_id }}</strong></td>
+            <td>
+              <div style="font-weight:600;">{{ order.customer_name }}</div>
+              <div style="font-size:12px;color:#888;">{{ order.customer_email }}</div>
+              <div style="font-size:12px;color:#888;">{{ order.customer_phone }}</div>
+            </td>
+            <td>{% if order.table %}Table {{ order.table.number }}{% else %}<span style="color:#ccc;">Takeaway</span>{% endif %}</td>
+            <td>{{ order.order_items.count }} items</td>
+            <td>
+              <strong style="color:var(--gold);">₹{{ order.total }}</strong>
+              <div style="font-size:11px;color:#888;">GST: ₹{{ order.tax }}</div>
+            </td>
+            <td>
+              {{ order.get_payment_method_display }}
+              <div>{% if order.payment_status == 'paid' %}<span class="badge badge-success">Paid ✓</span>{% else %}<span class="badge badge-warning">Unpaid</span>{% endif %}</div>
+            </td>
+            <td>
+              {% if order.status == 'paid' %}<span class="badge badge-success">Paid</span>
+              {% elif order.status == 'pending' %}<span class="badge badge-warning">Pending</span>
+              {% elif order.status == 'confirmed' %}<span class="badge badge-info">Confirmed</span>
+              {% elif order.status == 'preparing' %}<span class="badge badge-info">Preparing</span>
+              {% elif order.status == 'ready' %}<span class="badge badge-gold">Ready</span>
+              {% elif order.status == 'delivered' %}<span class="badge badge-success">Delivered</span>
+              {% elif order.status == 'cancelled' %}<span class="badge badge-danger">Cancelled</span>
+              {% else %}<span class="badge badge-dark">{{ order.get_status_display }}</span>{% endif %}
+            </td>
+            <td style="font-size:12px;color:#888;">{{ order.created_at|date:"d M Y" }}<br>{{ order.created_at|date:"h:i A" }}</td>
+            <td>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <button class="btn btn-sm btn-primary" onclick="showUpdate('{{ order.order_id }}','{{ order.status }}','{{ order.payment_status }}')" style="color:var(--gold);">✏️ Update</button>
+                <a href="/download-bill/{{ order.order_id }}/" class="btn btn-sm btn-gold">📄 Bill</a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9" style="text-align:center;padding:40px;color:#888;">No orders found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal-bg" id="update-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ Update Order</h3>
+      <button class="modal-close" onclick="hideModal('update-modal')">✕</button>
+    </div>
+    <form id="update-form" method="post">
+      {% csrf_token %}
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Order Status</label>
+          <select name="status" id="upd-status" class="form-control">
+            {% for val, label in status_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Status</label>
+          <select name="payment_status" id="upd-pay" class="form-control">
+            <option value="pending">Pending</option>
+            <option value="paid">Paid</option>
+            <option value="failed">Failed</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="hideModal('update-modal')">Cancel</button>
+        <button type="submit" class="btn btn-gold">✓ Update Order</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+function showUpdate(orderId, status, payStatus) {
+  document.getElementById('update-form').action = '/admin-panel/orders/update/' + orderId + '/';
+  document.getElementById('upd-status').value = status;
+  document.getElementById('upd-pay').value = payStatus;
+  showModal('update-modal');
+}
+</script>
+{% endblock %}
